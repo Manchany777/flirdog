@@ -1,0 +1,725 @@
+
+.Nav {
+    color: grey;
+}
+.hr1 {
+    height:2px;
+    background: grey;
+    margin: 20px 0 0 0;
+    border: 0;
+}
+.hr2 {
+    height:2px;
+    background: grey;
+    margin: 0;
+    border: 0;
+}
+.Navwrapper{
+    display: flex;
+    justify-content:center;
+}
+.Menu1 {
+    color: grey;
+    font-size: 16px;
+}
+.Menu1:hover, .Menu1:active{
+    font-weight: bold;
+    cursor: pointer;
+    transform: scale(1.1);
+    color: black;
+}
+.Link {
+    text-decoration: none;
+    color: grey;
+    font-size: 14px;
+}
+.Link:hover ,.Link:active{
+    font-weight: bold;
+    cursor: pointer;
+    transform: scale(1.1);
+    color: black;
+}
+
+.Link1 {
+    text-decoration: none;
+    color: grey;
+    font-size: 14px;
+    margin:2px;
+}
+
+.Link1:hover ,.Link1:active{
+    font-weight: bold;
+    cursor: pointer;
+    transform: scale(1.1);
+    color: black;
+}
+.LiHidden{
+    display: block;
+    height:0;
+    width:0;
+    overflow:hidden;
+}
+.LiVisible{
+    display: visible;
+    height:100%;    
+    width:100%;
+    overflow:visible;
+}
+.RoundedCircle{
+    width: 150px;
+    height: 150px;
+    justify-content: center;
+    object-fit: cover;
+}
+.Text {
+    border-bottom: 3px solid #f56084;
+    width: 500px;
+}
+.MyprofileUpdate_Text{
+    margin-bottom: 1rem;
+}
+.Space{
+    margin-left: 2rem;
+}
+
+.Space2{
+    margin-left: 50%;
+}
+.Space3{
+    margin-bottom: 3px;
+}
+
+.Email{
+    width: 30px;
+    height: 30px;
+    border-style: none;
+}
+.Btn{
+    width: 100%;
+    height: 50px;
+    background-color: #f56084;;
+    border: 0;
+    color: black;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 100px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+.Btn2{
+    height: 2rem;
+    background-color: #f56084;;
+    border: 0;
+    color: black;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border-radius: 10rem;
+    margin-top: 15px;
+}
+.Btn3{
+    width: 30rem;
+    height: 7rem;
+    background-color: #f56084;
+    border: 0;
+    color: black;
+    font-size: 2rem;
+    font-weight: 600;
+    border-radius: 100px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+.Btn4{
+    height: 3rem;
+    width: 20rem;
+    background-color: #f6f6f9;
+    color: #868688;
+    border: 0;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border-radius: 10rem;
+    margin-top: 15px;
+}
+.Btn4{
+    width: 24rem;
+    height: 4rem;
+    background-color: #f56084;
+    border: 0;
+    color: black;
+    font-size: 2rem;
+    font-weight: 600;
+    border-radius: 100px;
+    margin-bottom: 20px;
+}
+.Imagecenter{
+    display: flex;
+    justify-content: center;
+}
+.Imagecenter2{
+    display: flex;
+    justify-content: left;
+}
+.Imagecenter3{
+    display: flex;
+    justify-content: center;
+    margin-left: 10rem;
+}
+
+.Imagecenter4{
+    display: flex;
+    justify-content: start;
+    margin-top: 11px;
+    font-size: 18px;
+
+}
+.colorFixx{
+    font-weight: bold;
+    cursor: pointer;
+    transform: scale(1.1);
+    color: black;
+}
+.PetInfoLetter{
+    font-size: 3rem;
+    font-weight: bold;
+}
+.PageUpdateLetter{
+    font-size: 3rem;
+    font-weight: 600;
+}
+.bgcoltest1{
+    background-color: #f35433;
+    width: 100%;
+}
+
+.bgcoltest2{
+    background-color: blueviolet;
+    width: 100%;
+}
+
+.bgcoltest3{
+    background-color: blanchedalmond;
+    width: 100%;
+}
+.bgcoltest4{
+    background-color: #2e1e5f;
+    width: 100%;
+}
+.bgcoltest5{
+    background-color: #1e5c5f;
+    width: 100%;
+}
+.MyprofileUpdate_button{
+    border-radius: 20px;
+    background-color: #f56084;
+}
+.TextArea{
+    width: 100%;
+    resize: none;
+    padding: 10px;
+    border: 1px solid #e4e4e6;
+    border-radius: 5px;
+    font-size: 13px;
+    word-spacing: -4px;
+}
+.picSize{
+    width: 40px;
+    height: 40px;
+}
+.UploadFileLabel{
+    padding: 1px 1px;
+    background-color:#E7E7E9;
+    border-radius: 10px;
+    color: #A5A5A7;
+    cursor: pointer;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.MydogProfileRegisterText{
+    width: 360px;
+    white-space: nowrap;
+    border-radius: 6px;
+    border: 1px solid #e4e4e6;
+    background-color: #fff;
+    font-size: 13px;
+    padding: 3px 3px;
+}
+.MydogProfileRegisterText2{
+    width: 99%;
+    white-space: nowrap;
+    border-radius: 6px;
+    border: 0;
+    background-color: #fff;
+    color: #868688;
+    font-size: 13px;
+    padding: 3px 3px;
+}
+.MydogProfileRegisterText3{
+    width: 360px;
+    white-space: nowrap;
+    border-radius: 6px;
+    border: 0;
+    background-color: #fff;
+    font-size: 13px;
+    padding-top: 3px;
+}
+.MydogProfileRegisterText4{
+    width: 360px;
+    white-space: nowrap;
+    border-radius: 6px;
+    border: 0;
+    font-size: 13px;
+    padding-left: 4px;
+    color: #868688;
+}
+.MydogProfileRegisterText5{
+    width: 99%;
+    white-space: nowrap;
+    border-radius: 6px;
+    border: 0;
+    background-color: #fff;
+    color: #868688;
+    font-size: 13px;
+    padding: 3px 3px;
+}
+.MydogProfileRegisterTextInner{
+    
+    width: 360px;
+    white-space: nowrap;
+    border: 0;
+    background-color: #fff;
+    font-size: 13px;
+    line-height: 20px;
+    color: #868688;
+    
+}
+.MydogProfileRegisterTextCheck{
+    font-size: 13px;
+    color: #f24147;
+}
+
+.Point1{
+    font-size: 16px;
+    line-height: 19px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+    display: block;
+}
+.Point2{
+    margin-bottom: 50px;
+    padding: 25px;
+    background: #fff;
+    border: 2px solid #ffeb99;
+    -webkit-box-shadow: 0 2px 4px rgba(0,0,0,.15);
+    box-shadow: 0 2px 4px rgba(0,0,0,.15);
+    border-radius: 15px;
+    text-align: right;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 38px;
+}
+.Point3{
+    text-align: right;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 38px;
+    box-sizing: inherit;
+    color:#f24147;
+}
+.MySetting1{
+    font-size: 2em;
+    margin-block-start: 0.67em;
+    margin-block-end: 0.67em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
+/* // Mysetting.js switchbox에 있는 것들   */
+.switch {
+    margin-left: 40%;
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #f24147;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #f24147;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+  /* Mysetting.js switchbox에 있는 것들 //  */
+
+.Myarticle1{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;   
+    margin-top: 15%;
+    
+}
+.Myarticle2{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+    color: #707070;
+    font-size: 15px;
+    margin-top: 4%;
+}
+.Myarticle2_1{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+    color: #707070;
+    font-size: 15px;
+    margin-top: 4%;
+    margin-left: 17px;
+}
+.Myarticle2_2{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+    color:  #707070;
+    font-size: 15px;
+    margin-top: 4%;
+    margin-left: 17px;
+}
+.Myarticle3{
+    position: relative;
+    width: 180px;
+    height: 40px;
+    font-size: 14px;
+    border-radius: 30px;
+    border: none;
+    margin-top: 30px;
+    font-weight: 700;
+    background-color: #f24147;
+    color: white;
+}
+.Myarticle4{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+    color: #707070;
+    font-size: 15px;
+    margin-top: 2%;
+}
+.MypageHeader{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.MypageHeader .active{
+  background-color: red !important;
+  border-color: red !important;
+  color: white !important;
+}
+.MypageHeader1{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: white;
+    color: #707070;;
+}
+.MypageHeader1:onClick{
+    color: #f24147;
+}
+.BackgroungWhite{
+    background-color: white;
+}
+.borderbottomPink{
+    border-bottom: 3px solid #f56084;
+}
+
+.borderbottomPinkOff{
+    border-bottom: none;
+}
+/* ===========현성님꺼=============== */
+  
+.neutralizationLabel{
+    width: 50px;
+}
+
+input[type="checkbox"]:checked + .neutralizationLabel::before {
+    content: "✔"; /* 내용을 "✔"로 설정 */
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    margin-bottom: 25px;
+    margin-left: 3px;
+}
+.labelClass3 {
+    color: #F56084; /* 클릭하기 전 글자색 설정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #F56084;
+    background-color: white;
+    font-size:1.3em;
+    font-weight:bold;
+    cursor: pointer;
+    border-radius: 10px;
+    position: relative;
+}
+input[type=radio]:checked + .labelClass1 {
+    color: white; /* 클릭한 후 글자색을 변경 */
+    background-color: rgb(53, 204, 255);
+}
+input[type=radio]:checked + .labelClass2  {
+    color: white; /* 클릭한 후 글자색을 변경 */
+    background-color: #F56084;
+}
+
+.labelClass1 {
+    color: rgb(53, 204, 255); /* 클릭하기 전 글자색 설정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 50px;
+    border: 5px solid rgb(53, 204, 255);
+    background-color: white;
+    font-size:1.3em;
+    font-weight:bold;
+    cursor: pointer;
+    border-radius: 10px;
+    position: relative;
+}
+.labelClass2 {
+    color: #F56084; /* 클릭하기 전 글자색 설정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 50px;
+    border: 5px solid #F56084;
+    background-color: white;
+    font-size:1.3em;
+    font-weight:bold;
+    cursor: pointer;
+    border-radius: 10px;
+    position: relative;
+}
+
+.FormTitleDiv{
+    display: flex;
+    justify-content: left;
+    align-items:center;
+  }
+.FormTitleNameDiv{
+    width:80px;
+    height:30px;
+    background-color:#F56084;
+    color:white;
+    font-weight:bold;
+    font-size:0.9em;
+    border-radius:10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/* ========================== */
+
+.subjectA:link { color: black; text-decoration: none;}
+.subjectA:visited { color: black; text-decoration: none;}
+.subjectA:hover { color: #F56084;; text-decoration: underline;}
+.subjectA:active { color: black; text-decoration: none;}
+
+
+.MydogProfileMarging{
+    margin-top: 10px;
+}
+.boxMydogProfileRegister{
+    border-radius: 70%;
+    overflow: hidden;
+}
+.Imagecenter{
+    position: relative;
+}
+.main_image_text {
+  position: absolute;
+  top: 82%;
+  left: 50%;
+  transform: translate( -50%, -50% );
+  font-size: 10px;
+  color: #F56084;
+}
+.updateFormTest {
+	color: red;
+	font-size: 8pt;
+	font-weight: bold;
+}
+.MarginREM{
+    margin-top: 15rem !important;
+}
+.Margin0{
+    margin-top: 5rem;
+}
+.Margin1{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    text-align: center;   
+}
+.Margin2{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: left;
+    width: 100%;
+    color: #707070;
+    font-size: 15px;
+    margin-left: 14rem;
+    margin-top: 1rem;
+}
+.Margin2_1{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: left;
+    width: 100%;
+    color: #707070;
+    font-size: 15px;
+    margin-left: 14rem;
+}
+.Margin2_2{
+    display: flex;
+    align-items: start;
+    justify-content: left;
+    width: 100%;
+    color: #707070;
+    font-size: 15px;
+    margin-left: 14rem;
+    margin-top: 2rem;
+}
+.Margin4{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: left;
+    width: 100%;
+    color: #707070;
+    font-size: 15px;
+    margin-left: 15rem;
+}
+.Myarticle5{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 450px;
+    margin-top: 10px;
+    color: #707070;
+    font-size: 30px;
+    margin-top: 4%;
+    margin-left: 11.5rem;
+    border-bottom: #f56084 2px solid;
+    cursor: pointer;
+}
+.ImgBorder:hover{
+    border: 2px solid #f56084;
+}
+.Myarticle5Input{
+    outline: none;
+    cursor: pointer;
+    margin: 0;
+}
+.Myarticle5Input:focus{
+    outline: none;
+}
+.Margin1PointCHarge{
+    margin-left: 5rem;
+    font-size: 30px;
+    font-weight: 700;
+}
+.ImagecenterPoint{
+    text-align: center;
+    margin-left: 6rem;
+}
+.Margin0 input::-webkit-outer-spin-button,
+.Margin0 input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.input10{
+    border:none;
+    border-right: 0px;
+    border-top: 0px;
+    border-left: 0px;
+    width: 11rem;
+    color: #f56084;
+    font-size: 18px;
+
+}
+.input10:focus {outline:none;}

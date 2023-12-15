@@ -1,0 +1,57 @@
+.moimMainTitle {
+    text-align: center;
+    color: rgb(239, 136, 136);
+    font-size: 30px;
+    font-family: Ribeye;
+    font-weight: bold;
+}
+
+.moimHighlight {
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    margin: 0px auto;
+    overflow: hidden;
+}
+
+.moimHighlightImgDivImg {
+    width: 90%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 5%;
+    border: 1px solid pink;
+
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+.highlightShortDetail {
+    position: absolute;
+    font-weight: 400;
+    color: white;
+    padding: 10px;
+    padding-left: 30px;
+    width: 90%;
+    text-align: center;
+    overflow-wrap: break-word;
+    top: 65%;
+    transform: translateY(-60%);
+
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    flex-direction: column;
+
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* 
+background-color: rgba(0, 0, 0, 0.5);
+
+top: 48px;
+font-size: 13px;
+font-family: Ribeye;
+ 
+ align-items: center;*/
