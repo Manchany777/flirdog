@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Button, Container } from 'react-bootstrap';
+import { Button, Container, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 import Header from '../../main/Header';
 import Footer from '../../main/Footer';
@@ -14,6 +14,7 @@ import SomoimDetailMember from './SomoimDetailMember';
 import SomoimDetailChat from './SomoimDetailChat';
 import styles from '../../../css/somoim/detail/somoimDetailHeader.module.css'
 import { UserContext } from '../../../contexts/UserContext';
+import Swal from 'sweetalert2';
 
 
 const SomoimDetail = () => {
@@ -53,9 +54,7 @@ const SomoimDetail = () => {
             }).catch(error => console.log(error))
         }
         isJoin();
-    },[somoimId])
-
-
+    },[user, somoimId])
 
     // 가입 여부 확인 및 초기 데이터 로딩
     const isJoin = async () => {
@@ -78,39 +77,86 @@ const SomoimDetail = () => {
     useEffect(() => {
         console.log('user객체 id정보 : ' + user)
         console.log('somoimId : ' + somoimId)
-
+    
         // 최초 렌더링 시에도 isJoin 함수 호출
         isJoin();
     }, [somoimId, user, somoimJoin]);
 
+    // if (isAdmin === undefined) {
+    //     // isAdmin이 설정되지 않은 경우 로딩 스피너 또는 다른 처리를 할 수 있음
+    //     return (
+    //         <Spinner animation="border" role="status">
+    //             <span className="sr-only">Loading...</span>
+    //         </Spinner>
+    //     );
+    // }
+
     // 소모임 회원가입
     const joinSomoim = async (e) => { 
-        const confirmed = window.confirm('해당 소모임에 참여하시겠습니까?');
-        if(!user.id) {
-            alert('먼저 로그인해 주십시오.')
-            navigate('/login')
-        }
-        if (confirmed) {
-            try {
-                await axios.post(`/somoim/joinSomoim`, {
-                    somoimId: somoimId,
-                    userId: user.id,
-                  }).then(res => {
-                      setSomoimJoin(res.data)
-                      console.log(somoimJoin)
-                      alert('소모임에 가입하셨습니다.');
-      
-                      // 가입이 완료된 후에 isJoin 함수 호출
-                      isJoin();
-                  }).catch(e => console.log(e));
-            } catch(e) {
-                console.log(e)
+        Swal.fire({
+            title: '해당 소모임에 참여하시겠습니까?',
+            text: '"확인"를 클릭하시면 소모임에 참여합니다.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+        }).then(async (result) => {
+            if(!user.id) {
+                await Swal.fire('먼저 로그인해 주십시오.', '', 'error')
+                    .then(() => {
+                        navigate('/login')
+                    });
+                
             }
-            
+
+            if(result.isConfirmed) {
+                try {
+                    await axios.post(`/somoim/joinSomoim`, {
+                        somoimId: somoimId,
+                        userId: user.id,
+                      }).then(async (res) => {
+                          setSomoimJoin(res.data)
+                          console.log(somoimJoin)
+
+                          await Swal.fire('소모임에 가입하셨습니다.', '', 'success')
+                            .then(() => {
+                                // 가입이 완료된 후에 isJoin 함수 호출
+                                isJoin();
+                            });
+                      }).catch(e => console.log(e));
+                } catch(e) {
+                    console.log(e)
+                }  
+            } else {
+                console.log("유저 id 또는 소모임 id가 없습니다.");
+            }
+        })
+        // const confirmed = window.confirm('해당 소모임에 참여하시겠습니까?');
+        // if(!user.id) {
+        //     alert('먼저 로그인해 주십시오.')
+        //     navigate('/login')
+        // }
+        // if (confirmed) {
+        //     try {
+        //         await axios.post(`/somoim/joinSomoim`, {
+        //             somoimId: somoimId,
+        //             userId: user.id,
+        //           }).then(res => {
+        //               setSomoimJoin(res.data)
+        //               console.log(somoimJoin)
+        //               alert('소모임에 가입하셨습니다.');
       
-          } else {
-            console.log("유저 id 또는 소모임 id가 없습니다.");
-          }
+        //               // 가입이 완료된 후에 isJoin 함수 호출
+        //               isJoin();
+        //           }).catch(e => console.log(e));
+        //     } catch(e) {
+        //         console.log(e)
+        //     }  
+        //   } else {
+        //     console.log("유저 id 또는 소모임 id가 없습니다.");
+        //   }
     }
 
     // 소모임 수정
@@ -168,7 +214,7 @@ const SomoimDetail = () => {
                                         )
                                     } */}
                                     {
-                                        isAdmin === 2 && (
+                                        (isAdmin === 2 || isAdmin === undefined) && (
                                             <Button variant="outline-danger" onClick={joinSomoim} style={{ alignSelf: 'center' }}>
                                                 가입하기
                                             </Button>

@@ -78,12 +78,23 @@ const UserProvider = ({ children }) => {
   };
 
   const logout = () => {
-    if (window.confirm("정말 로그아웃하시겠습니까?")) {
-      localStorage.removeItem("user");
-      setUser({});
-      alert("로그아웃 되었습니다.");
-      window.location.reload();
-    }
+    Swal.fire({
+      title: '정말 로그아웃하시겠습니까?',
+      text: '',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '확인',
+      cancelButtonText: '취소',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("user");
+        setUser({});
+        await Swal.fire('로그아웃 되었습니다.', '', 'success')
+        window.location.reload();
+      }
+    })
   };
 
   return (

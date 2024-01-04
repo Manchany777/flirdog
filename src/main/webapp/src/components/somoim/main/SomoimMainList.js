@@ -37,10 +37,10 @@ const SomoimMainList = ({ selectedLocation, searchList, item }) => {
     // 소모임 전체리스트 가져오기
     useEffect(() => {
         const filterList = async () => {
-            if (!user || !user.id) {
-                // user가 비어있거나 id가 없으면 데이터를 가져오지 않음
-                return;
-            }
+            // if (!user || !user.id) {
+            //     // user가 비어있거나 id가 없으면 데이터를 가져오지 않음
+            //     return;
+            // }
             
             try {
                 const response = await axios.get('/somoim/getSomoimList');
@@ -109,6 +109,7 @@ const SomoimMainList = ({ selectedLocation, searchList, item }) => {
 
     return (
         <>
+            {/* {somoimList.length === 0 || somoimList.every(somoim => !somoim.createdId) ? ( */}
             {somoimList.length === 0 ? (
                 <p style={{ display:'flex', justifyContent: 'center' }}>로딩 중...</p>
             ) : (

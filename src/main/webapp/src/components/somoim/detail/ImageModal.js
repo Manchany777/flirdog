@@ -4,6 +4,7 @@ import styles from '../../../css/somoim/detail/modal_styles.module.css';
 import { UserContext } from '../../../contexts/UserContext';
 import { Carousel } from 'react-bootstrap';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const ImageModal = React.forwardRef((props, ref) => {
     const { user } = useContext(UserContext); // 유저 컨텍스트
@@ -75,10 +76,19 @@ const ImageModal = React.forwardRef((props, ref) => {
 
     // 이미지 전송
     const savePin = async () => {
-
-        if (window.confirm("업로드 하시겠습니까?")) {
-
-            // 이미지 배열과 상세 정보를 합쳐서 서버로 전송
+        Swal.fire({
+            title: '해당 이미지를 업로드 하시겠습니까?',
+            text: '"승인"를 클릭하시면 업로드 됩니다.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '승인',
+            cancelButtonText: '취소',
+            //reverseButtons: true, // 버튼 순서 거꾸로
+        }).then(async (result) => {
+            if(result.isConfirmed) {
+                // 이미지 배열과 상세 정보를 합쳐서 서버로 전송
             const formData = new FormData();
     
             // 이미지 배열을 formData에 추가
@@ -115,24 +125,22 @@ const ImageModal = React.forwardRef((props, ref) => {
                     "Content-Type": "multipart/form-data",
                     },
                 };
-    
-                // await axios.post('/somoim/somoimPhotoUpload', {
-                //     photoFields: photoFields,
-                //     imgFiles: imgFiles
-                // })
-                await axios.post('/somoim/somoimPhotoUpload', formData, config)
-                    .then(res => {
-                        console.log('업로드 후 formData', res.data)
-                        alert('사진 업로드가 완료되었습니다.')
+                const res = await axios.post('/somoim/somoimPhotoUpload', formData, config)
+
+                console.log('업로드 후 formData', res.data)
+
+                await Swal.fire('사진 업로드가 완료되었습니다.', '', 'success')
+                    .then(() => {
                         // 업로드 성공 시 onSavePin 콜백(사용자 정의 함수) 호출
                         props.onSavePin(res.data);
                         window.location.reload();
-                    }).catch(e => console.log(e));
+                    });
             } catch (error) {
                 console.error('이미지 업로드 오류 : ', error);
             }//try-catch
-        }
-
+            }
+            
+        })
     };
 
     React.useImperativeHandle(ref, () => ({
@@ -163,6 +171,7 @@ const ImageModal = React.forwardRef((props, ref) => {
 
                             <input
                                 onChange={uploadImg}
+                                ref={imageRef}
                                 type="file"
                                 name="upload_img"
                                 id="upload_img"
@@ -190,7 +199,7 @@ const ImageModal = React.forwardRef((props, ref) => {
                         </div>
                     </div>
 
-                    <div className={`${styles.section3}`}>
+                    <div className={`${styles.section3}`} onClick={() => imageRef.current.click()}>
                         <div className={`${styles.save_from_site}`}>이미지 업로드</div>
                     </div>
                 </div>

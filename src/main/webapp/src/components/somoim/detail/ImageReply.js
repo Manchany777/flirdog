@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Button, Form, InputGroup } from 'react-bootstrap';
 import { UserContext } from '../../../contexts/UserContext';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const ImageReply = ({ onSubmitComment, selectedPhotoInfo, onUpdateComments  }) => {
     const [photoComment, setPhotoComment] = useState({
@@ -59,35 +60,49 @@ const ImageReply = ({ onSubmitComment, selectedPhotoInfo, onUpdateComments  }) =
 
     // 댓글 submit
     const onSubmitPhotoComment = async () => {
-        if(window.confirm('댓글을 등록하시겠습니까?')) {
-            try {
-                const postData = {
-                    comment: photoComment.comment,
-                    userId: photoComment.userId,
-                    somoimId: photoComment.somoimId,
-                    photoId: photoComment.photoId,
-                };
-                console.log('postData:', postData);
-    
-                await axios.post('/somoim/somoimPhotoComment', postData)
-                .then(res => {
-                    console.log('댓글이 등록되었습니다!')
-                    // 댓글 등록 후 서버에서 최신 댓글 목록을 다시 받아옴
-                    fetchComments();
-                    onSubmitComment(photoComment.comment);
-            
-                    console.log('Submitted comment:', photoComment.comment);
-            
-                    setPhotoComment({
-                        ...photoComment,
-                        comment: '', // 댓글 입력 초기화
-                    });
-                })
-                .catch(e => console.log(e))
-            } catch (error) {
-                console.error('Error submitting comment:', error);
+        Swal.fire({
+            title: '댓글을 등록하시겠습니까?',
+            text: '"확인"를 클릭하시면 등록됩니다.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+            //reverseButtons: true, // 버튼 순서 거꾸로
+        }).then(async (result) => {
+            if(result.isConfirmed) {
+                try {
+                    const postData = {
+                        comment: photoComment.comment,
+                        userId: photoComment.userId,
+                        somoimId: photoComment.somoimId,
+                        photoId: photoComment.photoId,
+                    };
+                    console.log('postData:', postData);
+        
+                    await axios.post('/somoim/somoimPhotoComment', postData)
+                    .then(async (res) => {
+                        await Swal.fire('댓글이 등록되었습니다!', '', 'success').then(() => {
+                            console.log('댓글이 등록되었습니다!')
+                            // 댓글 등록 후 서버에서 최신 댓글 목록을 다시 받아옴
+                            fetchComments();
+                            onSubmitComment(photoComment.comment);
+                    
+                            console.log('Submitted comment:', photoComment.comment);
+                    
+                            setPhotoComment({
+                                ...photoComment,
+                                comment: '', // 댓글 입력 초기화
+                            }); 
+                        })
+                    })
+                    .catch(e => console.log(e))
+                } catch (error) {
+                    console.error('Error submitting comment:', error);
+                }
             }
-        }
+        })
     };
 
     // 입력값이 변경될 때마다 콘솔에 출력

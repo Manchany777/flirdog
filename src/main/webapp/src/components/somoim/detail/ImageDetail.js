@@ -1,11 +1,13 @@
 import axios from 'axios';
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, Carousel, Container, Form, InputGroup, Modal } from 'react-bootstrap';
+import { Button, Carousel, Container, Form, InputGroup, Modal, Spinner } from 'react-bootstrap';
 import { UserContext } from '../../../contexts/UserContext';
 import ImageModify from './ImageModify';
 import ImageReply from './ImageReply';
+import Swal from 'sweetalert2';
 
-const ImageDetail = ({ show, onClose, selectedPhotoInfo, somoimId, isAdmin }) => {
+// const ImageDetail = ({ show, onClose, selectedPhotoInfo, somoimId, isAdmin }) => {
+const ImageDetail = ({ show, onClose, selectedPhotoInfo, somoimId }) => {
     console.log('Selected Photo Info:', selectedPhotoInfo);
     console.log('selectedPhotoInfo.user.id', selectedPhotoInfo.user.id)
     
@@ -15,7 +17,7 @@ const ImageDetail = ({ show, onClose, selectedPhotoInfo, somoimId, isAdmin }) =>
     const [isLiked, setIsLiked] = useState(false); // 좋아요 구현
     const [likedCount, setLikeCount] = useState() // 좋아요 개수
     const [comments, setComments] = useState([{}]); // 댓글 목록 상태 변수
-
+    const [isAdmin, setIsAdmin] = useState();
     const [isModifyMode, setIsModifyMode] = useState(false); // 수정 모드 추가
     const [modifiedPhotoInfo, setModifiedPhotoInfo] = useState(null); // 수정할 이미지 정보 추가
 
@@ -27,10 +29,31 @@ const ImageDetail = ({ show, onClose, selectedPhotoInfo, somoimId, isAdmin }) =>
 
     // console.log('사진첩 디테일 somoimId : ', somoim.id)
     
+    
+    // isAdmin 권한 획득
+    const isJoin = async () => {
+        if (user && user.id && somoim && somoim.id) {
+            await axios.get(`http://localhost:8080/somoim/isSomoimMember?somoimId=${somoim.id}&userId=${user.id}`)
+                .then(res => {
+                    setIsAdmin(res.data)
+                    if(res.data) {
+                        console.log('이미지 디테일에서 해당 소모임에 대한 권한 isAdmin : ' + res.data)
+                        console.log('이미지 디테일에서 해당 소모임에 접속한 user의 id : ', user.id);
+                    }
+                    // 강제 리렌더링
+                    //forceUpdate({});
+                })
+                .catch(e => console.error('가입 여부 확인 중 오류:' + e))
+        }//if
+    };
+    
     useEffect(() => {
         console.log('ImageDetail - Selected Photo Info:', selectedPhotoInfo);
         console.log('ImageDetail - 해당 게시글의 댓글 목록 정보 :', comments);
-      }, [selectedPhotoInfo, comments, comments.user]);
+        console.log('ImageDetail - 해당 게시글의 유저 isAdmin 정보 :', isAdmin);
+
+        isJoin();
+      }, [selectedPhotoInfo, comments, comments.user, isJoin]);
 
     //조회수 계산
     useEffect(() => {
@@ -141,16 +164,19 @@ const ImageDetail = ({ show, onClose, selectedPhotoInfo, somoimId, isAdmin }) =>
 
     // 소모임 번호와 유저 권한 출력
     useEffect(() => {
-        console.log('사진첩 디테일 somoimId : ', somoimId)
-        console.log('사진첩 디테일 isAdmin : ', isAdmin)
-        console.log('사진첩 디테일 photoId : ', id)
+        if (isAdmin !== undefined && somoimId !== undefined) {
+            console.log('사진첩 디테일 somoimId : ', somoimId)
+            console.log('사진첩 디테일 isAdmin : ', isAdmin)
+            console.log('사진첩 디테일 photoId : ', id)
+        }
     },[isAdmin, somoimId, id])
 
     if (!selectedPhotoInfo) {
         // 선택된 이미지 정보가 없을 경우 모달을 렌더링하지 않음
         return null;
     }
-    
+
+
     // 조회수 계산 axios
     const updateHitCount = async () => {
         try { // ?id=${id}
@@ -179,32 +205,58 @@ const ImageDetail = ({ show, onClose, selectedPhotoInfo, somoimId, isAdmin }) =>
         setIsModifyMode(false);
     };
 
+    // if (isAdmin === undefined) {
+    //     // isAdmin이 설정되지 않은 경우 로딩 스피너 또는 다른 처리를 할 수 있음
+    //     return (
+    //         <Spinner animation="border" role="status">
+    //             <span className="sr-only">Loading...</span>
+    //         </Spinner>
+    //     );
+    // }
+
     // 글삭제
     const onDeletePhoto = async () => {
-        const confirm = window.confirm('정말로 삭제하시겠습니까?')
-        if(confirm) {
-            if(isAdmin !== 0 && isAdmin !== 1) {
-                alert('삭제 권한이 없습니다.')
-            } else {
-                // await axios.delete('/somoim/somoimPhotoDelete', {
-                //         data: {
-                //             id: id,
-                //             userId: user.id,
-                //             somoimId: somoim.id
-                //         }
-                //     })
-                await axios.delete(`/somoim/somoimPhotoDelete?id=${id}&userId=${user.id}&somoimId=${somoim.id}`)
-                    .then((res) => {
-                        console.log('삭제 응답:', res);
-                        alert('해당 게시글이 삭제되었습니다.')
-                        onClose();
-                        window.location.reload();
-                    })
-                    .catch((error) => {
-                        console.error('삭제시 에러', error);
-                    });
-            }//isAdmin if문
-        }//confirm if문
+        Swal.fire({
+            title: '정말로 삭제하시겠습니까?',
+            text: '"확인"를 클릭하시면 삭제됩니다.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+            //reverseButtons: true, // 버튼 순서 거꾸로
+        }).then(async (result) => {
+            if(result.isConfirmed && isAdmin !== undefined) {
+                if(isAdmin !== 0 && isAdmin !== 1) {
+                    Swal.fire('삭제 권한이 없습니다.', '', 'fail')
+                } else {
+                    // await axios.delete('/somoim/somoimPhotoDelete', {
+                    //         data: {
+                    //             id: id,
+                    //             userId: user.id,
+                    //             somoimId: somoim.id
+                    //         }
+                    //     })
+                    await axios.delete(`/somoim/somoimPhotoDelete?id=${id}&userId=${user.id}&somoimId=${somoim.id}`)
+                        .then(async (res) => {
+                            console.log('삭제 응답:', res);
+
+                            await Swal.fire('해당 게시글이 삭제되었습니다.', '', 'success')
+                                .then(() => {
+                                    onClose();
+                                    window.location.reload();
+                                });
+                            // alert('해당 게시글이 삭제되었습니다.')
+                            // onClose();
+                            // window.location.reload();
+                        })
+                        .catch((error) => {
+                            console.error('삭제시 에러', error);
+                        });
+                }//isAdmin if문
+            }//confirm if문
+        })
     }
 
     // 댓글 등록 콜백 함수
@@ -236,26 +288,40 @@ const ImageDetail = ({ show, onClose, selectedPhotoInfo, somoimId, isAdmin }) =>
         setComments(reversedComments);
     };
 
-
     // 댓글 삭제
     const onReplyDeleteBtn = (selectedReply) => {
-        console.log('selectedReply', selectedReply)
-        if(window.confirm('정말 삭제하시겠습니까?')) {
-            axios.delete(`/somoim/photoReplyDelete?commentId=${selectedReply.id}&userId=${user.id}`)
-              .then((response) => {
-                console.log('댓글 삭제 응답:', response);
-                alert('해당 댓글이 삭제되었습니다.')
+        console.log('selectedReply : ', selectedReply)
 
-                // 새로운 배열을 생성하여 삭제된 댓글을 제외한 댓글 목록을 만듭니다.
-                const updatedComments = comments.filter(comment => comment.id !== selectedReply.id);
-                
-                // 새로운 배열을 상태로 설정합니다.
-                setComments(updatedComments);
+        Swal.fire({
+            title: '정말로 삭제하시겠습니까?',
+            text: '"확인"를 클릭하시면 삭제됩니다.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+            //reverseButtons: true, // 버튼 순서 거꾸로
+        }).then(async (result) => {
+            if(result.isConfirmed && isAdmin !== undefined) {
+                await axios.delete(`/somoim/photoReplyDelete?commentId=${selectedReply.id}&userId=${user.id}`)
+              .then(async (response) => {
+                console.log('댓글 삭제 응답:', response);
+
+                await Swal.fire('해당 댓글이 삭제되었습니다.', '', 'success')
+                    .then(() => {
+                        // 새로운 배열을 생성하여 삭제된 댓글을 제외한 댓글 목록을 만듭니다.
+                        const updatedComments = comments.filter(comment => comment.id !== selectedReply.id);
+                        
+                        // 새로운 배열을 상태로 설정합니다.
+                        setComments(updatedComments);
+                    });
               })
               .catch((error) => {
                 console.error('댓글 삭제 에러:', error);
               });
-        }
+            }
+        })
     };
 
     // 게시글 날짜 형식 변환
@@ -413,12 +479,12 @@ const ImageDetail = ({ show, onClose, selectedPhotoInfo, somoimId, isAdmin }) =>
                         링크 : <a href={photoLink} target="_blank" rel="noopener noreferrer">{photoLink}</a>
                     </div>
                     <div style={{ marginRight: '0.5rem', gap: '2' }}>
-                    {isAdmin === 1 || ((selectedPhotoInfo.user && selectedPhotoInfo.user.id) === user?.id) && (
+                    {isAdmin === 1 || ((selectedPhotoInfo.user && selectedPhotoInfo.user.id) === user?.id) ? (
                         <>
                             <Button variant="danger" size="sm" onClick={() => handleModifyButtonClick(selectedPhotoInfo)}>수정</Button>
                             <Button variant="danger" size="sm" onClick={onDeletePhoto} style={{ marginLeft: '0.7rem' }}>삭제</Button>
                         </>
-                    )}
+                    ) : '수정 및 삭제 권한이 없습니다'}
                     </div>
                 </Modal.Footer>
             </div>

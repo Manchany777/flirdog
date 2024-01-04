@@ -5,6 +5,7 @@ import { UserContext } from '../../../contexts/UserContext';
 import { Button, Carousel, Form, InputGroup, Modal } from 'react-bootstrap';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const ImageModify = ({ modifiedPhotoInfo }) => {
     console.log('Selected Photo Info - Modify :', modifiedPhotoInfo);
@@ -136,64 +137,83 @@ const ImageModify = ({ modifiedPhotoInfo }) => {
     }, [somoimPhotoList]);
 
 
-    // 이미지 전송
+    // 이미지 수정 및 전송
     const savePin = async () => {
         if (!imagesLoaded) {
-            alert('이미지가 아직 로딩 중입니다. 기다려주세요.');
-            return;
+            await Swal.fire({
+                title: '이미지가 아직 로딩 중입니다.',
+                html: '잠시 기다려주세요...',
+                didOpen: () => {
+                  Swal.showLoading();
+                }
+              });
+            
+              return;
         }
 
-        if (window.confirm("저장 하시겠습니까?")) {
-            const formData = new FormData();
+        Swal.fire({
+            title: '저장 하시겠습니까?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '확인',
+            cancelButtonText: '취소',
+        }).then(async (result) => {
+            if(result.isConfirmed) {
+                const formData = new FormData();
 
-            // 기존 이미지를 추가
-            for (let i = 0; i < somoimPhotoList.length; i++) {
-                formData.append("imgFiles", somoimPhotoList[i]);
-            }
-
-            // 새 이미지를 추가
-            for (let i = 0; i < newImgFiles.length; i++) {
-                formData.append("newImgFiles", newImgFiles[i]);
-            }
-
-            // pinDetails를 추가
-            formData.append(
-                "pinDetails",
-                new Blob([JSON.stringify(pinDetails)], { type: "application/json" })
-            );
-
-            // formData 내용 확인
-            for (let pair of formData.entries()) {
-                const [key, value] = pair;
-    
-                if (value instanceof File) {
-                    console.log(key, value.name);
-                } else {
-                    console.log(key, value);
+                // 기존 이미지를 추가
+                for (let i = 0; i < somoimPhotoList.length; i++) {
+                    formData.append("imgFiles", somoimPhotoList[i]);
                 }
-            }
-
-            try {
-                const config = {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                    },
-                };
-   
-                await axios.post('/somoim/somoimPhotoUpdate', formData, config)
-                    .then(res => {
-                        console.log('업로드 후 formData', res.data);
-                        alert('사진 업로드가 완료되었습니다.');
-                        //<Link to={`/somoim/detailPhoto/${somoim.id}?photoId=${id}`}>돌아가기</Link>
-                        // navigate(`/somoim/detailPhoto/${somoim.id}?photoId=${id}`);
-                        // console.log('navigate 호출 확인');
-                        window.location.href = `/somoim/detailPhoto/${somoim.id}?photoId=${id}`;
-                    }).catch(e => console.log(e));
+    
+                // 새 이미지를 추가
+                for (let i = 0; i < newImgFiles.length; i++) {
+                    formData.append("newImgFiles", newImgFiles[i]);
+                }
+    
+                // pinDetails를 추가
+                formData.append(
+                    "pinDetails",
+                    new Blob([JSON.stringify(pinDetails)], { type: "application/json" })
+                );
+    
+                // formData 내용 확인
+                for (let pair of formData.entries()) {
+                    const [key, value] = pair;
+        
+                    if (value instanceof File) {
+                        console.log(key, value.name);
+                    } else {
+                        console.log(key, value);
+                    }
+                }
+    
+                try {
+                    const config = {
+                        headers: {
+                            "Content-Type": "multipart/form-data",
+                        },
+                    };
+    
+                    await axios.post('/somoim/somoimPhotoUpdate', formData, config)
+                        .then(async (res) => {
+                            await Swal.fire('글 수정이 완료되었습니다.', '', 'success')
+                                .then(() => {
+                                    console.log('업로드 후 formData', res.data);
+                                    //<Link to={`/somoim/detailPhoto/${somoim.id}?photoId=${id}`}>돌아가기</Link>
+                                    // navigate(`/somoim/detailPhoto/${somoim.id}?photoId=${id}`);
+                                    // console.log('navigate 호출 확인');
+                                    window.location.href = `/somoim/detailPhoto/${somoim.id}?photoId=${id}`;
+                                });
+                        }).catch(e => console.log(e));
                 } catch (error) {
                     console.error('이미지 업로드 오류 : ', error);
                     
                 }
             }
+        })
            
     };
     // 이미지 전송

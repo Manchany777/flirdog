@@ -23,7 +23,6 @@ import ReviewListForm from "./components/admin/4리뷰관리/ReviewListForm";
 import SomoimMain from "./components/somoim/SomoimMain";
 import SomoimNew from "./components/somoim/SomoimNew";
 import SomoimDetail from "./components/somoim/detail/SomoimDetail";
-import SomoimTest from "./components/somoim/SomoimTest";
 
 import MypageMain from "./components/mypage/MypageMain";
 import Myarticle from "./components/mypage/2내가작성한글/Myarticle";
@@ -161,7 +160,6 @@ const App = () => {
               element={<SomoimDetail />}
             />
             <Route path="/somoim/somoimModify" element={<SomoimModify/>} />
-            <Route path="/somoimTest" element={<SomoimTest />} />
 
             <Route path="/login" element={<Login></Login>} />
             <Route path="/login/:showModal" element={<Login></Login>} />

@@ -8,6 +8,7 @@ import ImageModal from './ImageModal';
 import axios from 'axios';
 import ImageDetail from './ImageDetail';
 import { useLocation } from 'react-router-dom';
+import Swal from 'sweetalert2';
 // import Pin from './Pin';
 // import Modal from './Modal';
 
@@ -52,15 +53,17 @@ const SomoimDetailPhoto = ({ somoimId, user, isAdmin } ) => {
 
     const handleClose = () => setShow(false);
     //const handleShow = () => setShow(true);
-    const handleShow = () => {
+    const handleShow = async () => {
       // 소모임 가입 여부를 확인
       if (isAdmin === 2) {
-        alert("소모임에 먼저 가입하세요.");
-        return;
-      }
-    
-      // 가입되어 있다면 모달을 열기
-      setShow(true);
+        await Swal.fire('소모임에 먼저 가입하세요.', '', 'error')
+                    .then(() => {
+                      return;
+                    });
+      } else {
+        // 가입되어 있다면 모달을 열기
+        setShow(true);
+      } 
     };
     // 상세보기 구현
     const [showModal, setShowModal] = useState(false);
@@ -367,7 +370,7 @@ const SomoimDetailPhoto = ({ somoimId, user, isAdmin } ) => {
                       setSelectedPhotoInfo(null);
                     }}
                     selectedPhotoInfo={selectedPhotoInfo}
-                    isAdmin={admin}
+                    // isAdmin={admin}
                     somoimId={somoimNum}
                   />
                 )}

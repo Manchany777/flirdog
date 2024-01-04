@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import styles from '../../../css/somoim/detail/somoimMember.module.css';
+import Swal from 'sweetalert2';
 
 const SomoimDetailMember = ({ somoimId, isAdmin, user }) => {
     const [formData, setFormData] = useState({}); // 소모임 정보
@@ -116,25 +117,37 @@ const SomoimDetailMember = ({ somoimId, isAdmin, user }) => {
     }, [userDTO, userList]); // userDTO가 변경될 때만 useEffect 실행
 
     // 유저 강퇴(해당 테이블 목록에서 삭제)
-    const handleBanUser = (somoimId, userId) => {
-        if (window.confirm("정말 해당 유저를 추방하시겠습니까?")) {
-            try {
-                //axios.delete(`/somoim/deleteUser?somoimId=${somoimId}&userId=${userId}`)
-                axios.delete(`/somoim/deleteUser`, { params: { somoimId, userId } })
-                .then(res => {
-                    console.log('강퇴 응답 데이터:', res.data);
-                    alert('해당 유저는 강퇴되었습니다.')
-    
-                    // 강퇴 성공 후 finalInfo에서 해당 유저를 제외하고 업데이트
-                    const updatedFinalInfo = finalInfo.filter(item => item.userDTO.id !== userId);
-                    setFinalInfo(updatedFinalInfo);
-                })
-                .catch(e => console.log(e))
-            } catch(error) {
-                console.log('404 Error')
-              }
-            
-          }
+    const handleBanUser = async (somoimId, userId) => {
+        Swal.fire({
+            title: '정말 해당 유저를 추방하시겠습니까??',
+            text: '추방사유에 해당되는지 신중한 검토부탁드립니다.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: '승인',
+            cancelButtonText: '취소',
+        }).then(async (result) => {
+            if(result.isConfirmed) {
+                try {
+                    //axios.delete(`/somoim/deleteUser?somoimId=${somoimId}&userId=${userId}`)
+                    axios.delete(`/somoim/deleteUser`, { params: { somoimId, userId } })
+                    .then(async (res) => {
+                        await Swal.fire('해당 유저는 강퇴되었습니다.', '', 'success')
+                            .then(() => {
+                                console.log('강퇴 응답 데이터:', res.data);
+                
+                                // 강퇴 성공 후 finalInfo에서 해당 유저를 제외하고 업데이트
+                                const updatedFinalInfo = finalInfo.filter(item => item.userDTO.id !== userId);
+                                setFinalInfo(updatedFinalInfo);
+                            });
+                    })
+                    .catch(e => console.log(e))
+                } catch(error) {
+                    console.log('404 Error')
+                  }
+            } 
+        })
     } 
 
     console.log('finalInfo2', finalInfo);

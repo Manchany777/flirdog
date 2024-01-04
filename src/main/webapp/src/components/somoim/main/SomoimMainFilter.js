@@ -10,6 +10,7 @@ import {CustomMenu, CustomToggle} from './SomoimMainCategoryToggle';
 import {Dropdown} from 'react-bootstrap';
 import { UserContext } from '../../../contexts/UserContext';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const SomoimMainFilter = ({ onSelectLocation, onSearch }) => {
     const [categoryToggle, setCategoryToggle] = useState(false);
@@ -45,9 +46,11 @@ const SomoimMainFilter = ({ onSelectLocation, onSearch }) => {
 
     //(() => { ... })()로 함수를 정의하고 즉시 실행
     const preLogin = () => {
-        id ? navigate('/somoim/somoimNew') : (() => {
-          alert('먼저 로그인 하세요');
-          navigate('/login');
+        id ? navigate('/somoim/somoimNew') : (async () => {
+        await Swal.fire('먼저 로그인 하세요.', '', 'error')
+            .then(() => {
+                navigate('/login');
+            })
         })();
       }
 

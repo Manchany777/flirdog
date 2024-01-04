@@ -17,6 +17,7 @@ import styles from "../../css/somoim/main/somoimNew.module.css";
 import { UserContext } from "../../contexts/UserContext";
 import Reactquill from "./Reactquill";
 import SomoimPostcode from "./SomoimPostcode";
+import Swal from "sweetalert2";
 
 const SomoimNew = () => {
   const [formData, setFormData] = useState({
@@ -60,8 +61,9 @@ const SomoimNew = () => {
 
   const [isEditorDisabled, setIsEditorDisabled] = useState(false); // React-Quill 상태변수
 
-  //const [createdId, setCreatedId] = useState('John Doe')
   const [validated, setValidated] = useState(false); // 유효성 검사
+  const [isContentValidated, setIsContentValidated] = useState(false) // 텍스트 에디터 유효성 검사
+  const [isImageValidated, setIsImageValidated] = useState(false) // 대표 이미지 유효성 검사
   //const [showAlert, setShowAlert] = useState(false);
 
   const navigate = useNavigate();
@@ -111,6 +113,7 @@ const SomoimNew = () => {
   };
 
   const readURL = (input) => {
+    setIsImageValidated(input.files[0].length > 0 ? false : true)
     // 파일 업로드
     if (input.files && input.files[0]) {
       var reader = new FileReader();
@@ -120,6 +123,7 @@ const SomoimNew = () => {
         setShowImgSrc(reader.result);
         setFile(input.files[0]);
       };
+      setIsImageValidated(false);
     } else {
       // 파일이 선택되지 않은 경우 (취소된 경우) 처리
       if (showImgSrc) {
@@ -127,8 +131,10 @@ const SomoimNew = () => {
       } else {
         setShowImgSrc(""); // 기존 이미지 소스 지우기
         //setFile(''); // 파일 상태 지우기
+        setIsImageValidated(true);
       }
     }
+
   };
 
   useEffect(() => {
@@ -163,21 +169,35 @@ const SomoimNew = () => {
   };
 
   const handleContentChange = (e) => {
-    // setFormData({
-    //     ...formData,
-    //     introduceDetail: e,
-    // });
+    const content = e;
 
     setFormData((prevFormData) => ({
       ...prevFormData,
-      introduceDetail: e,
+      introduceDetail: content,
     }));
     console.log("상세정보 :   " + formData.introduceDetail);
+    //setIsContentValidated(false);
+    //setIsContentValidated(content === undefined ? true  : false); 
+    //setIsContentValidated(content.trim().length > 0 ? false  : true); 
+    setIsContentValidated(stripHTMLAndTrim(content).length > 0 ? false : true);
   };
-
+  
   useEffect(() => {
-    console.log("상세정보: " + formData.introduceDetail.e);
-  }, [formData.introduceDetail.e]);
+    console.log("상세정보 useEffect :   " + formData.introduceDetail);
+    //setIsContentValidated(formData.introduceDetail.trim().length > 0 ? false : true);
+    //setIsContentValidated(stripHTMLAndTrim(formData.introduceDetail).length > 0 ? false : true);
+  }, [formData.introduceDetail]);
+
+  // useEffect(() => {
+  //   console.log("상세정보 useEffect : " + formData.introduceDetail.e);
+  //   console.log("handleContentChange에서 isContentValidated의 결과값 : ", isContentValidated)
+  // }, [formData.introduceDetail.e, isContentValidated]);
+
+  function stripHTMLAndTrim(html) {
+    const plainText = html.replace(/<[^>]*>/g, ''); // HTML 태그 제거
+    const trimmedText = plainText.trim(); // 앞뒤공백 제거
+    return trimmedText;
+  }
 
   const handleLocationChange = (e) => {
     const text = e.target.options[e.target.selectedIndex].text;
@@ -195,109 +215,142 @@ const SomoimNew = () => {
     const form = e.currentTarget;
 
     console.log("Form Data:", formData);
+    console.log("handleSubmit에서 isContentValidated의 결과값 : ", isContentValidated)
 
-    if (form.checkValidity() === false) {
+    if (form.checkValidity() === false || isContentValidated || isImageValidated) {
       e.preventDefault();
       e.stopPropagation();
+      
+      //setIsContentValidated(true);
+
+      if (formData.introduceDetail.length > 0) {
+        setIsContentValidated(false);
+      } else {
+        setIsContentValidated(true);
+        return;
+      } 
+
+      if (file) {
+         // 이미지가 선택되었을 때 유효성 검사를 false로 설정
+        setIsImageValidated(false);
+      } else {
+        setIsImageValidated(true);
+        return;
+      }
+
+      setValidated(true);
+      console.log("유효성 검사 미통과")
     } else {
-      setValidated(form.checkValidity() === true);
-
+      //setIsContentValidated(false);
+      console.log("유효성 검사 통과")
       try {
-        const confirmed = window.confirm("정말 소모임을 개설하시겠습니까?");
-
-        if (confirmed) {
-          const updatedFormData = {
-            somoim: {
-              ...formData,
-              accountName: name,
-            },
-            user: {
-              id,
-            },
-            // ...formData,
-            //user: { id }
-            //user: { id : id }
-          };
-          console.log(
-            "updatedFormData의 유저시퀀스번호 : " + updatedFormData.user.id
-          );
-
-          const RealUpdate = new FormData();
-          RealUpdate.append("introducePhoto", file); // 이미지 파일 추가
-
-          const jsonBlob = new Blob([JSON.stringify(updatedFormData)], {
-            type: "application/json",
-          });
-          RealUpdate.append("updatedFormData", jsonBlob);
-
-          //RealUpdate.append('updatedFormData', updatedFormData);
-          // RealUpdate.append('somoimName', updatedFormData.somoimName);
-          // RealUpdate.append('introduceSub', updatedFormData.introduceSub);
-          // RealUpdate.append('introduceDetail', updatedFormData.introduceDetail);
-          // RealUpdate.append('memberCount', updatedFormData.memberCount);
-          // RealUpdate.append('cost', updatedFormData.cost);
-          // RealUpdate.append('location', updatedFormData.location);
-          // RealUpdate.append('target', updatedFormData.target);
-          // RealUpdate.append('address', updatedFormData.address);
-          // RealUpdate.append('address2', updatedFormData.address2);
-          // RealUpdate.append('accountEmail', updatedFormData.accountEmail);
-          // RealUpdate.append('accountEmail', updatedFormData.accountPhone);
-          // const RealLastUpdate = {
-          //     somoim: RealUpdate,
-          //     user: {
-          //       id
-          //     },
-          //   };
-
-          console.log("updatedFormData");
-          console.log(RealUpdate.get("updatedFormData"));
-          console.log("introducePhoto");
-          console.log(RealUpdate.get("introducePhoto"));
-
-          const response = await axios
-            .post("/somoim/somoimNewWrite", RealUpdate, {
-              headers: {
-                //'Content-Type': 'application/json',
-                "Content-Type": "multipart/form-data",
+        Swal.fire({
+          title: '정말 소모임을 개설하시겠습니까?',
+          text: '"확인"를 클릭하시면 소모임에 참여합니다.',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: '확인',
+          cancelButtonText: '취소',
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            const updatedFormData = {
+              somoim: {
+                ...formData,
+                accountName: name,
               },
-            })
-            .then(
-              alert("소모임 개설이 완료되었습니다."),
-              navigate("/somoim")
-              // res =>  {
-              //     // const response = await axios.post('/somoim/somoimNewWrite',
-              //     // JSON.stringify(updatedFormData),
-              //     // {
-              //     //     headers: {
-              //     //         'Content-Type': 'application/json',
-              //     //     },
-              //     // }).then(res =>  {
-              //         alert('소모임 개설이 완료되었습니다');
-              //         //setShowAlert(true);
-              //         navigate('/somoim');
-              //     }
-            )
-            .catch((error) => console.log(error));
-          // const response = await axios.post('/somoim/somoimNewWrite',
-          //     JSON.stringify(updatedFormData),
-          //     {
-          //         headers: {
-          //             'Content-Type': 'application/json',
-          //         },
-          //     }).then(res =>  {
-          //         alert('소모임 개설이 완료되었습니다');
-          //         //setShowAlert(true);
-          //         navigate('/somoim');
-          //     })
-          //     .catch(error => console.log(error));
-          console.log("서버 응답 오류:", response);
-        } else {
-          console.log("소모임 개설이 취소되었습니다.");
-        } //if
+              user: {
+                id,
+              },
+              // ...formData,
+              //user: { id }
+              //user: { id : id }
+            };
+            console.log(
+              "updatedFormData의 유저시퀀스번호 : " + updatedFormData.user.id
+            );
+
+            const RealUpdate = new FormData();
+            RealUpdate.append("introducePhoto", file); // 이미지 파일 추가
+
+            const jsonBlob = new Blob([JSON.stringify(updatedFormData)], {
+              type: "application/json",
+            });
+            RealUpdate.append("updatedFormData", jsonBlob);
+
+            //RealUpdate.append('updatedFormData', updatedFormData);
+            // RealUpdate.append('somoimName', updatedFormData.somoimName);
+            // RealUpdate.append('introduceSub', updatedFormData.introduceSub);
+            // RealUpdate.append('introduceDetail', updatedFormData.introduceDetail);
+            // RealUpdate.append('memberCount', updatedFormData.memberCount);
+            // RealUpdate.append('cost', updatedFormData.cost);
+            // RealUpdate.append('location', updatedFormData.location);
+            // RealUpdate.append('target', updatedFormData.target);
+            // RealUpdate.append('address', updatedFormData.address);
+            // RealUpdate.append('address2', updatedFormData.address2);
+            // RealUpdate.append('accountEmail', updatedFormData.accountEmail);
+            // RealUpdate.append('accountEmail', updatedFormData.accountPhone);
+            // const RealLastUpdate = {
+            //     somoim: RealUpdate,
+            //     user: {
+            //       id
+            //     },
+            //   };
+
+            console.log("updatedFormData");
+            console.log(RealUpdate.get("updatedFormData"));
+            console.log("introducePhoto");
+            console.log(RealUpdate.get("introducePhoto"));
+
+            const response = await axios
+              .post("/somoim/somoimNewWrite", RealUpdate, {
+                headers: {
+                  //'Content-Type': 'application/json',
+                  "Content-Type": "multipart/form-data",
+                },
+              })
+              .then(async (res) => {
+                await Swal.fire('소모임 개설이 완료되었습니다.', '', 'success')
+                            .then(() => {
+                              navigate("/somoim")
+                              // res =>  {
+                              //     // const response = await axios.post('/somoim/somoimNewWrite',
+                              //     // JSON.stringify(updatedFormData),
+                              //     // {
+                              //     //     headers: {
+                              //     //         'Content-Type': 'application/json',
+                              //     //     },
+                              //     // }).then(res =>  {
+                              //         alert('소모임 개설이 완료되었습니다');
+                              //         //setShowAlert(true);
+                              //         navigate('/somoim');
+                              //     }
+                            });
+                })
+              .catch((error) => console.log(error));
+            // const response = await axios.post('/somoim/somoimNewWrite',
+            //     JSON.stringify(updatedFormData),
+            //     {
+            //         headers: {
+            //             'Content-Type': 'application/json',
+            //         },
+            //     }).then(res =>  {
+            //         alert('소모임 개설이 완료되었습니다');
+            //         //setShowAlert(true);
+            //         navigate('/somoim');
+            //     })
+            //     .catch(error => console.log(error));
+            console.log("서버 응답 오류:", response);
+          } else {
+            console.log("소모임 개설이 취소되었습니다.");
+            setValidated(false); // 유효성 검사 상태 초기화
+          } //if
+        })
       } catch (e) {
         console.error("서버 요청 에러:", e);
       } //try-catch
-    }
+    } //바깥 if문
   };
 
   const badgeContainerStyle = {
@@ -381,7 +434,7 @@ const SomoimNew = () => {
                       required
                     />
                     <Form.Control.Feedback type="invalid">
-                      소모임에 대한 한 줄정보를 입력해주세요!
+                      소모임에 대한 한 줄 정보를 입력해주세요!
                     </Form.Control.Feedback>
                   </Col>
                 </Form.Group>
@@ -445,12 +498,17 @@ const SomoimNew = () => {
                     </div>
                   </div>
                   {/* <Form.Control 
-                                    onChange={ e => readURL(e.target) }
-                                    type="file" size="sm" 
-                                    style={{ width: '70%' }} /> */}
-                  <Form.Control.Feedback type="invalid">
+                                onChange={ e => readURL(e.target) }
+                                type="file" size="sm" 
+                                style={{ width: '70%' }} /> */}
+                  {isImageValidated && (
+                    <div style={{color: 'red', textAlign: 'center'}}>
+                      소모임 대표 이미지를 넣어주세요!
+                    </div>
+                  )}
+                  {/* <Form.Control.Feedback type="invalid" tooltip>
                     소모임 대표 이미지를 넣어주세요!
-                  </Form.Control.Feedback>
+                  </Form.Control.Feedback> */}
                 </Form.Group>
               </div>
             </div>
@@ -472,15 +530,19 @@ const SomoimNew = () => {
                   required
                 />
                 {/* <Form.Control 
-                                        id='introduceDetail' 
-                                        name='introduceDetail' 
-                                        value={introduceDetail}
-                                        onChange={handleChange}
-                                        as="textarea" rows={5} required />
-                                 */}
-                <Form.Control.Feedback type="invalid">
-                  소모임에 대한 상세정보를 입력해주세요!
-                </Form.Control.Feedback>
+                              id='introduceDetail' 
+                              name='introduceDetail' 
+                              value={introduceDetail}
+                              onChange={handleChange}
+                              as="textarea" rows={5} required />
+                        */}
+                {isContentValidated && (
+                  // <Form.Control.Feedback type="invalid" tooltip>
+                    <div style={{color: 'red'}}>
+                        소모임에 대한 상세정보를 입력해주세요!
+                    </div>
+                  // </Form.Control.Feedback>
+                )}
               </Col>
             </Form.Group>
             <Form.Group as={Row} className={`${styles.default} mb-4`}>
@@ -556,7 +618,7 @@ const SomoimNew = () => {
                         aria-label="Default select example"
                         required
                       >
-                        <option>활동지역 선택</option>
+                        <option selected disabled value="">활동지역 선택</option>
                         <option value="1">전국</option>
                         <option value="2">서울</option>
                         <option value="3">인천</option>
@@ -777,7 +839,7 @@ const SomoimNew = () => {
               <Button
                 variant="secondary"
                 type="submit"
-                disabled={validated}
+                // disabled={validated}
                 style={{ backgroundColor: validated ? "black" : "" }}
               >
                 소모임 개설하기
